@@ -2,9 +2,274 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mi primera página</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Ventas - Cafetería</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #4b2e2b; 
+            --accent-color: #d7ccc8;  
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        p.subtitle {
+            color: #666;
+            margin-top: 0;
+        }
+
+    
+        .kpi-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .kpi-card {
+            background: var(--card-bg);
+            border-left: 5px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .kpi-title {
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .kpi-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-top: 5px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            border-bottom: 2px solid #f1f1f1;
+            padding-bottom: 8px;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 280px;
+        }
+
+     
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>¡Hola mundo!</h1>
+
+    <header>
+        <h1>DASHBOARD DE VENTAS - CAFETERÍA</h1>
+        <p class="subtitle">Versión web interactiva nativa (Sin Power BI)</p>
+    </header>
+
+    
+    <div class="kpi-container">
+        <div class="kpi-card">
+            <div class="kpi-title">Ventas Totales</div>
+            <div class="kpi-value">$115.43 mil</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">Transacciones Tarjeta</div>
+            <div class="kpi-value">3.547 mil</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">Ticket Promedio</div>
+            <div class="kpi-value">$31.75</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">Venta Promedio Día</div>
+            <div class="kpi-value">$302.97</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">% Pago Tarjeta</div>
+            <div class="kpi-value">97.55%</div>
+        </div>
+    </div>
+
+    
+    <div class="dashboard-grid">
+        
+        
+        <div class="card full-width">
+            <h3>Ventas Totales por Mes</h3>
+            <div class="chart-container" style="height: 300px;">
+                <canvas id="ventasMesChart"></canvas>
+            </div>
+        </div>
+
+        
+        <div class="card">
+            <h3>Ventas Totales por Bebidas</h3>
+            <div class="chart-container">
+                <canvas id="ventasBebidasChart"></canvas>
+            </div>
+        </div>
+
+      
+        <div class="card">
+            <h3>Cash o Card (% Tipo de Pago)</h3>
+            <div class="chart-container">
+                <canvas id="tipoPagoChart"></canvas>
+            </div>
+        </div>
+
+       
+        <div class="card full-width">
+            <h3>Ventas Totales por Día</h3>
+            <div class="chart-container" style="height: 250px;">
+                <canvas id="ventasDiaChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <
+    <script>
+        const colorCafete = '#795548'; 
+
+        
+        const ctxMes = document.getElementById('ventasMesChart').getContext('2d');
+        new Chart(ctxMes, {
+            type: 'bar',
+            data: {
+                labels: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'],
+                datasets: [{
+                    label: 'Ventas Totales ($ mil)',
+                    data: [6.5, 13.2, 17.0, 6.7, 7.8, 7.7, 6.9, 7.6, 13.8, 8.6, 8.2, 5.0],
+                    backgroundColor: colorCafete,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
+
+       
+        const ctxBebidas = document.getElementById('ventasBebidasChart').getContext('2d');
+        new Chart(ctxBebidas, {
+            type: 'bar',
+            data: {
+                labels: ['Espresso', 'Cortado', 'Cocoa', 'Hot Chocolate', 'Americano', 'Cappuccino', 'Americano with Milk', 'Latte'],
+                datasets: [{
+                    data: [3.5, 6.2, 8.1, 10.5, 14.2, 19.8, 27.5, 32.1],
+                    backgroundColor: '#8d6e63',
+                    borderRadius: 3
+                }]
+            },
+            options: {
+                indexAxis: 'y', 
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        
+        const ctxPago = document.getElementById('tipoPagoChart').getContext('2d');
+        new Chart(ctxPago, {
+            type: 'doughnut',
+            data: {
+                labels: ['card (97.55%)', 'cash (2.45%)'],
+                datasets: [{
+                    data: [97.55, 2.45],
+                    backgroundColor: ['#d7ccc8', '#5d4037']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+       
+        const ctxDia = document.getElementById('ventasDiaChart').getContext('2d');
+    
+        const diasLabels = Array.from({length: 31}, (_, i) => i + 1);
+        const diasData = diasLabels.map(() => Math.floor(Math.random() * (4500 - 2000) + 2000));
+        
+        new Chart(ctxDia, {
+            type: 'bar',
+            data: {
+                labels: diasLabels,
+                datasets: [{
+                    label: 'Venta Diaria',
+                    data: diasData,
+                    backgroundColor: '#6d4c41',
+                    barPercentage: 0.8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+
 </body>
 </html>
